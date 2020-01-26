@@ -33,14 +33,13 @@ namespace ConsoleApp1
 
             var result = client.KeyPhrases(input.ToString());
 
-            // Printing keyphrases
-            Console.WriteLine("Key phrases:");
+            //Console.WriteLine("Key phrases:");
 
-            foreach (string keyphrase in result.KeyPhrases)
-            {
-                Console.WriteLine($"\t{keyphrase}");
-                array.Add(keyphrase);
-            }
+            //foreach (string keyphrase in result.KeyPhrases)
+            //{
+            //    Console.WriteLine($"\t{keyphrase}");
+            //    array.Add(keyphrase);
+            //}
         }
     }
 }

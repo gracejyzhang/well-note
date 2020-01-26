@@ -4,6 +4,7 @@ using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace ConsoleApp1
@@ -20,35 +21,39 @@ namespace ConsoleApp1
             var res_collection = db.GetCollection<BsonDocument>("analysis");
             var audio_collection = db.GetCollection<BsonDocument>("audio");
             var links = audio_collection.Find(new BsonDocument()).ToList();
+            var link = links[links.Count - 1];
+            string filename = @"C:\Users\grace\source\repos\ConsoleApp1\ConsoleApp1\" + link.GetValue("date").ToString() + ".wav";
 
             using (var client = new WebClient())
             {
-                foreach (BsonDocument link in links)
-                {
-                    string filename = @"C:\Users\grace\source\repos\ConsoleApp1\ConsoleApp1\" + link.GetValue("date").ToString() + ".wav";
-                    client.DownloadFile(link.GetValue("audio").ToString(), filename);
-
-                    AudioToText audio = new AudioToText();
-                    audio.RecognizeSpeech(filename).Wait();
-                    List<string> sentences = audio.sentences;
-
-                    SentimentAnalysis analyzer = new SentimentAnalysis();
-                    foreach (string sentence in sentences)
-                    {
-                        analyzer.Analyze(endpoint, key, sentence).Wait();
-                    }
-
-                    KeyPhraseExtraction phrases = new KeyPhraseExtraction();
-                    phrases.Extract(endpoint, key, sentences).Wait();
-
-                    var document = new BsonDocument { { "date", link.GetValue("date") }, { "sentences", analyzer.array }, { "key_phrases", phrases.array } };
-
-                    res_collection.InsertOne(document);
-                }
+                client.DownloadFile(link.GetValue("audio").ToString(), filename);
             }
 
-            Console.Write("Press any key to exit.");
-            Console.ReadKey();
+            AudioToText audio = new AudioToText();
+            audio.RecognizeSpeech(filename).Wait();
+            List<string> sentences = audio.sentences;
+
+            SentimentAnalysis analyzer = new SentimentAnalysis();
+        
+            StringBuilder transcript = new StringBuilder();
+            foreach (string sentence in sentences)
+            {
+                analyzer.Analyze(endpoint, key, sentence).Wait();
+                transcript.Append(sentence);
+                transcript.Append(" ");
+            }
+
+            SentimentAnalysis overall_analyzer = new SentimentAnalysis();
+            overall_analyzer.Analyze(endpoint, key, transcript.ToString()).Wait();
+
+            KeyPhraseExtraction phrases = new KeyPhraseExtraction();
+            phrases.Extract(endpoint, key, sentences).Wait();
+
+            var document = new BsonDocument { { "date", link.GetValue("date") }, { "transcript", transcript.ToString() }, { "score", overall_analyzer.total }, { "key_phrases", phrases.array }, { "sentences", analyzer.array } };
+            res_collection.InsertOne(document);
+
+            //Console.Write("Press any key to exit.");
+            //Console.ReadKey();
         }
     }
 }

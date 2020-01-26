@@ -20,7 +20,6 @@ namespace ConsoleApp1
         {
             var stopRecognition = new TaskCompletionSource<int>();
             var config = SpeechConfig.FromSubscription("d5f4078e7dae47b7a62eca019c5cc1b4", "westus");
-            
 
             using (var audioInput = AudioConfig.FromWavFileInput(filename))
             {
@@ -30,7 +29,7 @@ namespace ConsoleApp1
                     {
                         if (e.Result.Reason == ResultReason.RecognizedSpeech)
                         {
-                            Console.WriteLine($"RECOGNIZED: Text={e.Result.Text}");
+                            //Console.WriteLine($"RECOGNIZED: Text={e.Result.Text}");
                             sentences.Add(e.Result.Text);
                         }
                         else if (e.Result.Reason == ResultReason.NoMatch)
@@ -53,26 +52,20 @@ namespace ConsoleApp1
                         stopRecognition.TrySetResult(0);
                     };
 
-                    recognizer.SessionStarted += (s, e) =>
-                    {
-                        Console.WriteLine("\n    Session started event.");
-                    };
+                    //recognizer.SessionStarted += (s, e) =>
+                    //{
+                    //    Console.WriteLine("\n    Session started event.");
+                    //};
 
-                    recognizer.SessionStopped += (s, e) =>
-                    {
-                        Console.WriteLine("\n    Session stopped event.");
-                        Console.WriteLine("\nStop recognition.");
-                        stopRecognition.TrySetResult(0);
-                    };
+                    //recognizer.SessionStopped += (s, e) =>
+                    //{
+                    //    Console.WriteLine("\n    Session stopped event.");
+                    //    Console.WriteLine("\nStop recognition.");
+                    //    stopRecognition.TrySetResult(0);
+                    //};
 
-                    // Starts continuous recognition. Uses StopContinuousRecognitionAsync() to stop recognition.
                     await recognizer.StartContinuousRecognitionAsync().ConfigureAwait(false);
-
-                    // Waits for completion.
-                    // Use Task.WaitAny to keep the task rooted.
                     Task.WaitAny(new[] { stopRecognition.Task });
-
-                    // Stops recognition.
                     await recognizer.StopContinuousRecognitionAsync().ConfigureAwait(false);
                 }
             }
