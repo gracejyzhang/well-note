@@ -57,7 +57,7 @@ namespace ConsoleApp1
                     .StartNow()
                     .WithSimpleSchedule(x => x
                         .WithIntervalInSeconds(5)
-                        .WithRepeatCount(5))
+                        .RepeatForever())
                     .Build();
 
                 // Tell quartz to schedule the job using our trigger
