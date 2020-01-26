@@ -43,9 +43,12 @@ namespace ConsoleApp1
                     StringBuilder transcript = new StringBuilder();
                     foreach (string sentence in sentences)
                     {
-                        analyzer.Analyze(endpoint, key, sentence).Wait();
-                        transcript.Append(sentence);
-                        transcript.Append(" ");
+                        if (!sentence.Equals("") && !sentence.Equals(" "))
+                        {
+                            analyzer.Analyze(endpoint, key, sentence).Wait();
+                            transcript.Append(sentence);
+                            transcript.Append(" ");
+                        }
                     }
 
                     SentimentAnalysis overall_analyzer = new SentimentAnalysis();

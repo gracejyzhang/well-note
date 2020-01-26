@@ -56,7 +56,7 @@ namespace ConsoleApp1
                     .WithIdentity("trigger1", "group1")
                     .StartNow()
                     .WithSimpleSchedule(x => x
-                        .WithIntervalInSeconds(5)
+                        .WithIntervalInSeconds(3)
                         .RepeatForever())
                     .Build();
 
@@ -64,7 +64,7 @@ namespace ConsoleApp1
                 await scheduler.ScheduleJob(job, trigger);
 
                 // some sleep to show what's happening
-                await Task.Delay(TimeSpan.FromSeconds(60));
+                await Task.Delay(TimeSpan.FromSeconds(300));
 
                 // and last shut down the scheduler when you are ready to close your program
                 await scheduler.Shutdown();
