@@ -57,7 +57,7 @@ namespace ConsoleApp1
                     KeyPhraseExtraction phrases = new KeyPhraseExtraction();
                     phrases.Extract(endpoint, key, sentences).Wait();
 
-                    var document = new BsonDocument { { "date", link.GetValue("date") }, { "transcript", transcript.ToString() }, { "score", overall_analyzer.total }, { "key_phrases", phrases.array }, { "sentences", analyzer.array } };
+                    var document = new BsonDocument { { "date", link.GetValue("date") }, { "dateFormated", link.GetValue("dateFormated") }, { "transcript", transcript.ToString() }, { "score", overall_analyzer.total }, { "key_phrases", phrases.array }, { "sentences", analyzer.array } };
                     res_collection.InsertOne(document);
                 }
             }
