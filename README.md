@@ -4,6 +4,7 @@ A video diary that uses facial expression and text sentiment analysis to allow u
 I implemented speech-to-text and sentiment analysis functionality by using Microsoft Azure Speech Services and Text Analytics. The audio-related data was read, processed, and written to MongoDB Atlas.
 
 Devpost: https://devpost.com/software/wellnote  
+Full Git Repository: https://github.com/yccgabby/wellnote
 
 #### Homepage
 ![Homepage](https://github.com/gracejyzhang/well-note/blob/master/Images/homepage.png)
